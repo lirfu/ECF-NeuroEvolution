@@ -20,9 +20,12 @@ private:
     shared_ptr<DerivativeFunction> hiddenFunction_;
     shared_ptr<DerivativeFunction> outputFunction_;
     shared_ptr<DescendMethod> descendMethod_;
+    double learningRate_;
+    double minLoss_;
+    uint maxIterations_;
 public:
     NetworkCenter(IProblem *, DerivativeFunction *hiddenFunction,
-                  DerivativeFunction *outputFunction);
+                  DerivativeFunction *outputFunction, double learningRate, double minLoss, uint maxIterations);
 
     ~NetworkCenter();
 

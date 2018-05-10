@@ -32,16 +32,18 @@ void ReducedCellDivisionEval::registerParameters(StateP state) {
     EvaluateOp::registerParameters(state);
 
     //TODO
-    // Learning rate of the learning algorithm.
-//    state->getRegistry()->registerEntry("learningRate", (voidP) (new double(1e-3)), ECF::DOUBLE);
-    // Maximum network depth.
+    // Penalize network depth.
 //    state->getRegistry()->registerEntry("maxDepth", (voidP) (new uint(1000)), ECF::UINT);
     // Add penalty points to evaluation time (length).
 //    state->getRegistry()->registerEntry("penalizeTime", (voidP) (new uint(0)), ECF::UINT);
 
-    state->getRegistry()->registerEntry("problem", (voidP) nullptr, ECF::STRING);
-    state->getRegistry()->registerEntry("hiddenFunction", (voidP) nullptr, ECF::STRING);
-    state->getRegistry()->registerEntry("outputFunction", (voidP) nullptr, ECF::STRING);
+    state->getRegistry()->registerEntry(paramProblem_, (voidP) nullptr, ECF::STRING);
+    state->getRegistry()->registerEntry(paramHiddenFunction_, (voidP) new std::string("sigmoid"), ECF::STRING);
+    state->getRegistry()->registerEntry(paramOutputFunction_, (voidP) new std::string("sigmoid"), ECF::STRING);
+
+    state->getRegistry()->registerEntry(paramLearningRate_, (voidP) new double(1e-3), ECF::DOUBLE);
+    state->getRegistry()->registerEntry(paramMinLoss_, (voidP) new double(0), ECF::DOUBLE);
+    state->getRegistry()->registerEntry(paramMaxIterations_, (voidP) new uint(-1), ECF::UINT);
 }
 
 DerivativeFunction *ReducedCellDivisionEval::strToFun(std::string *str) {
@@ -58,9 +60,13 @@ DerivativeFunction *ReducedCellDivisionEval::strToFun(std::string *str) {
 }
 
 bool ReducedCellDivisionEval::initialize(StateP state) {
-    std::string *problemString = ((std::string *) state->getRegistry()->getEntry("problem").get());
-    std::string *hiddenFString = ((std::string *) state->getRegistry()->getEntry("hiddenFunction").get());
-    std::string *outoutFString = ((std::string *) state->getRegistry()->getEntry("outputFunction").get());
+    std::string *problemString = ((std::string *) state->getRegistry()->getEntry(paramProblem_).get());
+    std::string *hiddenFString = ((std::string *) state->getRegistry()->getEntry(paramHiddenFunction_).get());
+    std::string *outoutFString = ((std::string *) state->getRegistry()->getEntry(paramOutputFunction_).get());
+
+    double learningRate = *((double *) state->getRegistry()->getEntry(paramLearningRate_).get());
+    double minLoss = *((double *) state->getRegistry()->getEntry(paramMinLoss_).get());
+    uint maxIter = *((uint *) state->getRegistry()->getEntry(paramMaxIterations_).get());
 
     try {
         IProblem *problem = nullptr;
@@ -77,7 +83,8 @@ bool ReducedCellDivisionEval::initialize(StateP state) {
         }
 
 
-        networkCenter_ = new NetworkCenter(problem, strToFun(hiddenFString), strToFun(outoutFString));
+        networkCenter_ = new NetworkCenter(problem, strToFun(hiddenFString), strToFun(outoutFString),
+                                           learningRate, minLoss, maxIter);
     } catch (runtime_error &e) {
         std::cerr << "ReducedCellDivisionEval: " << e.what() << std::endl;
     }
@@ -87,8 +94,13 @@ bool ReducedCellDivisionEval::initialize(StateP state) {
 FitnessP ReducedCellDivisionEval::evaluate(IndividualP p) {
     Tree::Tree *tree = (Tree::Tree *) p->getGenotype().get();
     // Populate architecture using a machine state.
-    MachineState state={.index = 0, .architecture=std::vector<uint>()};
+    MachineState state = {.index = 0, .architecture=std::vector<uint>()};
     tree->execute(&state);
+
+//    cout << "Archit: ";
+//    for (uint v:state.architecture)
+//        cout << v << ", ";
+//    cout << endl;
 
     // Build, train and validate neural network on given architecture.
     double loss = networkCenter_->testNetwork(state.architecture);

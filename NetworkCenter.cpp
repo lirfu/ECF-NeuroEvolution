@@ -2,13 +2,16 @@
 // Created by lirfu on 10.05.18..
 //
 
-
 #include "NetworkCenter.h"
 
-NetworkCenter::NetworkCenter(IProblem *problem, DerivativeFunction *hiddenFunction, DerivativeFunction *outputFunction)
+NetworkCenter::NetworkCenter(IProblem *problem, DerivativeFunction *hiddenFunction, DerivativeFunction *outputFunction,
+                             double learningRate, double minLoss, uint maxIterations)
         : hiddenFunction_(hiddenFunction), outputFunction_(outputFunction), descendMethod_(new VanillaGradientDescend) {
     problem_ = problem;
     initializer_ = new RandomWeightInitializer(-1, 1);
+    learningRate_ = learningRate;
+    minLoss_ = minLoss;
+    maxIterations_ = maxIterations;
 }
 
 NetworkCenter::~NetworkCenter() {
@@ -17,7 +20,7 @@ NetworkCenter::~NetworkCenter() {
 }
 
 double NetworkCenter::testNetwork(std::vector<uint> architecture) {
-// Build neural network
+    // Build neural network
     vector<InnerLayer<Matrix> *> layers;
     uint lastSize = problem_->inputSize();
     for (uint val : architecture) {
@@ -33,21 +36,12 @@ double NetworkCenter::testNetwork(std::vector<uint> architecture) {
 
     // Train NN
     vector<Data *> &data = *problem_->getDataset();
-    double loss = 10;
+    double loss = minLoss_ + 1;
     ulong iteration = 0;
-    while (loss > 1e-3 && iteration < 1000) {
+    while (loss > minLoss_ && iteration < maxIterations_) {
         iteration++;
-        loss = net.backpropagate(1e-3, data);
-//        std::cout << "Iteration " << iteration << " has loss: " << loss << std::endl;
+        loss = net.backpropagate(learningRate_, data);
     }
-
-//    std::cout << "Outputs:" << std::endl;
-//    for (uint i = 0; i < data.size(); i++) {
-//        for (uint j = 0; j < data[i]->testSize(); j++) {
-//            std::cout << "Prediction: " << problem_->toLabel(net.getOutput(*data[i]->getValidationInputs()->at(j)))
-//                      << "   Label: " << problem_->toLabel(*data[i]->getValidationOutputs()->at(j)) << std::endl;
-//        }
-//    }
 
     return loss;
 }
