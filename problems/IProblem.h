@@ -14,7 +14,9 @@ public:
 
     virtual uint outputSize()=0;
 
-    virtual std::vector<Data *> &getDataset()=0;
+    virtual std::vector<Data *> *getDataset()=0;
+
+    virtual std::string toLabel(Matrix &)=0;
 };
 
 

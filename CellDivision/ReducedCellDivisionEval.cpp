@@ -6,9 +6,7 @@
 #include <ecf/tree/Tree.h>
 #include <ecf/FitnessMin.h>
 #include <NeuralNetwork.h>
-#include <weightinitializers/RandomWeightInitializer.h>
 #include "ReducedCellDivisionEval.h"
-#include "../problems/IProblem.h"
 #include "../problems/XORProblem.h"
 
 ReducedCellDivisionEval::ReducedCellDivisionEval(StateP state) {
@@ -26,6 +24,10 @@ ReducedCellDivisionEval::ReducedCellDivisionEval(StateP state) {
     state->addGenotype(tree);
 }
 
+ReducedCellDivisionEval::~ReducedCellDivisionEval() {
+    delete networkCenter_;
+}
+
 void ReducedCellDivisionEval::registerParameters(StateP state) {
     EvaluateOp::registerParameters(state);
 
@@ -34,55 +36,64 @@ void ReducedCellDivisionEval::registerParameters(StateP state) {
 //    state->getRegistry()->registerEntry("learningRate", (voidP) (new double(1e-3)), ECF::DOUBLE);
     // Maximum network depth.
 //    state->getRegistry()->registerEntry("maxDepth", (voidP) (new uint(1000)), ECF::UINT);
-
     // Add penalty points to evaluation time (length).
 //    state->getRegistry()->registerEntry("penalizeTime", (voidP) (new uint(0)), ECF::UINT);
+
+    state->getRegistry()->registerEntry("problem", (voidP) nullptr, ECF::STRING);
+    state->getRegistry()->registerEntry("hiddenFunction", (voidP) nullptr, ECF::STRING);
+    state->getRegistry()->registerEntry("outputFunction", (voidP) nullptr, ECF::STRING);
+}
+
+DerivativeFunction *ReducedCellDivisionEval::strToFun(std::string *str) {
+    if (!str) {
+        throw runtime_error("Function not defined!"
+                                    " Please define activation function for hidden layer and for output layer.");
+    } else if (*str == "linear") {
+        return new Linear();
+    } else if (*str == "sigmoid") {
+        return new Sigmoid();
+    } else {
+        throw runtime_error("Unrecognized function: " + *str);
+    }
 }
 
 bool ReducedCellDivisionEval::initialize(StateP state) {
-    //TODO
-//    learningRate_ = *((uint *)state->getRegistry()->getEntry("learningRate").get());
+    std::string *problemString = ((std::string *) state->getRegistry()->getEntry("problem").get());
+    std::string *hiddenFString = ((std::string *) state->getRegistry()->getEntry("hiddenFunction").get());
+    std::string *outoutFString = ((std::string *) state->getRegistry()->getEntry("outputFunction").get());
+
+    try {
+        IProblem *problem = nullptr;
+        if (!problemString) {
+            throw runtime_error("Problem not defined!");
+        } else if (*problemString == "xor") {
+            problem = new XORProblem();
+        } else if (*problemString == "function") {
+            //TODO
+        } else if (*problemString == "wine") {
+            //TODO
+        } else {
+            throw runtime_error("Unrecognized problem: " + *problemString);
+        }
+
+
+        networkCenter_ = new NetworkCenter(problem, strToFun(hiddenFString), strToFun(outoutFString));
+    } catch (runtime_error &e) {
+        std::cerr << "ReducedCellDivisionEval: " << e.what() << std::endl;
+    }
     return true;
 }
 
 FitnessP ReducedCellDivisionEval::evaluate(IndividualP p) {
     Tree::Tree *tree = (Tree::Tree *) p->getGenotype().get();
     // Populate architecture using a machine state.
-    MachineState state;
+    MachineState state={.index = 0, .architecture=std::vector<uint>()};
     tree->execute(&state);
 
+    // Build, train and validate neural network on given architecture.
+    double loss = networkCenter_->testNetwork(state.architecture);
+
     FitnessP fitness(new FitnessMin);
-
-    // TODO Load problem (mabye in constructor)
-    IProblem *problem = new XORProblem();
-
-    // Build neural network
-    shared_ptr<DescendMethod> descendMethod(new VanillaGradientDescend());
-    shared_ptr<DerivativeFunction> sigmoid(new Sigmoid());
-    shared_ptr<DerivativeFunction> linear(new Linear());
-    vector<InnerLayer<Matrix> *> layers;
-    uint lastSize = problem->inputSize();
-    for (uint i = 0; i < state.architecture.size(); i++) {
-        layers.push_back(new FullyConnectedLayer<Matrix>(lastSize, state.architecture[i], sigmoid, descendMethod));
-        lastSize = state.architecture[i];
-    }
-    layers.push_back(new FullyConnectedLayer<Matrix>(lastSize, problem->outputSize(), linear, descendMethod));
-    NeuralNetwork net(new InputLayer<Matrix>(problem->inputSize()), layers);
-
-    // Initialize weights
-    WeightInitializer *initializer = new RandomWeightInitializer(-1, 1);
-    net.initialize(initializer);
-    delete initializer;
-
-    // Train NN
-    double loss = 10;
-    ulong iteration = 0;
-    while (loss > 1e-3) {
-        iteration++;
-        loss = net.backpropagate(1e-3, problem->getDataset());
-        std::cout << "Iteration " << iteration << " has loss: " << loss << std::endl;
-    }
-
     fitness->setValue(loss);
     return fitness;
 }

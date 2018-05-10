@@ -6,50 +6,15 @@
 #include "weightinitializers/RandomWeightInitializer.h"
 
 int main(int argc, char **argv) {
-    // TODO Load problem (mabye in constructor)
-    IProblem *problem = new XORProblem();
+    StateP state(new State);
+    state->setEvalOp(new ReducedCellDivisionEval(state));
 
-    vector<uint> architecture({4, 3});
-
-    // Build neural network
-    shared_ptr<DescendMethod> descendMethod(new VanillaGradientDescend());
-    shared_ptr<DerivativeFunction> sigmoid(new Sigmoid());
-    shared_ptr<DerivativeFunction> linear(new Linear());
-    vector<InnerLayer<Matrix> *> layers;
-    uint lastSize = problem->inputSize();
-    for (uint i = 0; i < architecture.size(); i++) {
-        layers.push_back(new FullyConnectedLayer<Matrix>(lastSize, architecture[i], sigmoid, descendMethod));
-        lastSize = architecture[i];
+    // initialize and start evaluation
+    if (!state->initialize(argc, argv)) {
+        std::cerr << "Cannot initialize state!" << std::endl;
+        return 1;
     }
-    layers.push_back(new FullyConnectedLayer<Matrix>(lastSize, problem->outputSize(), linear, descendMethod));
-    NeuralNetwork net(new InputLayer<Matrix>(problem->inputSize()), layers);
-
-    // Initialize weights
-    WeightInitializer *initializer = new RandomWeightInitializer(-1, 1);
-    net.initialize(initializer);
-    delete initializer;
-
-    // Train NN
-    double loss = 10;
-    ulong iteration = 0;
-    while (loss > 1e-3) {
-        iteration++;
-        loss = net.backpropagate(1e-3, problem->getDataset());
-        std::cout << "Iteration " << iteration << " has loss: " << loss << std::endl;
-    }
-
-
-
-
-//    StateP state(new State);
-//    state->setEvalOp(new ReducedCellDivisionEval(state));
-//
-//    // initialize and start evaluation
-//    if (!state->initialize(argc, argv)) {
-//        std::cerr << "Cannot initialize state!" << std::endl;
-//        return 1;
-//    }
-//    state->run();
+    state->run();
 
 
 //    // after the evolution: show best evolved ant's behaviour on learning trails

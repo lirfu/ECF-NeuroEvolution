@@ -19,7 +19,10 @@ public:
 
     uint outputSize() override;
 
-    vector<Data *> &getDataset() override;
+    vector<Data *> *getDataset() override;
+
+    std::string toLabel(Matrix &matrix) override;
+
 };
 
 #endif //NEUROEVOLUTION_XORPROBLEM_H

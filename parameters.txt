@@ -1,4 +1,9 @@
 <ECF>
+    <Algorithm>
+        <SteadyStateTournament>
+            <Entry desc="" key="tsize">3</Entry>
+        </SteadyStateTournament>
+    </Algorithm>
 	<Genotype>
 		<Tree>
 			<Entry key="maxdepth">10</Entry>
@@ -9,6 +14,9 @@
 	</Genotype>
 
 	<Registry>
+	    <Entry key="problem">xor</Entry>
+	    <Entry key="hiddenFunction">sigmoid</Entry>
+	    <Entry key="outputFunction">linear</Entry>
 		<Entry key="population.size">500</Entry>
 		<Entry key="term.maxgen">50</Entry>
 		<Entry key="log.level">3</Entry>

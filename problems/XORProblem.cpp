@@ -7,19 +7,19 @@
 
 
 XORProblem::XORProblem() {
-    vector<Matrix *> inputs;
-    inputs.push_back(new Matrix(1, 2, {-1, -1}));
-    inputs.push_back(new Matrix(1, 2, {-1, 1}));
-    inputs.push_back(new Matrix(1, 2, {1, -1}));
-    inputs.push_back(new Matrix(1, 2, {1, 1}));
+    vector<Matrix *> *inputs = new vector<Matrix *>();
+    inputs->push_back(new Matrix(1, 2, {-1, -1}));
+    inputs->push_back(new Matrix(1, 2, {-1, 1}));
+    inputs->push_back(new Matrix(1, 2, {1, -1}));
+    inputs->push_back(new Matrix(1, 2, {1, 1}));
 
-    vector<Matrix *> outputs;
-    outputs.push_back(new Matrix(1, 1, {-1}));
-    outputs.push_back(new Matrix(1, 1, {1}));
-    outputs.push_back(new Matrix(1, 1, {1}));
-    outputs.push_back(new Matrix(1, 1, {-1}));
+    vector<Matrix *> *outputs = new vector<Matrix *>();
+    outputs->push_back(new Matrix(1, 1, {-1}));
+    outputs->push_back(new Matrix(1, 1, {1}));
+    outputs->push_back(new Matrix(1, 1, {1}));
+    outputs->push_back(new Matrix(1, 1, {-1}));
 
-    batches_.push_back(new SimpleData(&inputs, &outputs));
+    batches_.push_back(new SimpleData(inputs, outputs));
 }
 
 XORProblem::~XORProblem() {
@@ -27,8 +27,8 @@ XORProblem::~XORProblem() {
         delete d;
 }
 
-vector<Data *> &XORProblem::getDataset() {
-    return batches_;
+vector<Data *> *XORProblem::getDataset() {
+    return &batches_;
 }
 
 uint XORProblem::inputSize() {
@@ -37,4 +37,8 @@ uint XORProblem::inputSize() {
 
 uint XORProblem::outputSize() {
     return 1;
+}
+
+std::string XORProblem::toLabel(Matrix &matrix) {
+    return std::to_string(matrix.get(0, 0) > 0 ? 1 : -1);
 }

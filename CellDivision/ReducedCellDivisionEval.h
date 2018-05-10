@@ -13,6 +13,8 @@
 #include "descentmethods/VanillaGradientDescend.h"
 #include "functions/Sigmoid.h"
 #include "functions/Linear.h"
+#include "../problems/IProblem.h"
+#include "../NetworkCenter.h"
 
 class ReducedCellDivisionEval : public EvaluateOp {
 private:
@@ -70,9 +72,15 @@ private:
         }
     };
 
+    NetworkCenter *networkCenter_;
+
+    DerivativeFunction* strToFun(std::string *);
+
 public:
     /** Constructor.<br> Constructs the tree genotype and sets it to given state. */
     ReducedCellDivisionEval(StateP state);
+
+    ~ReducedCellDivisionEval();
 
     /* Inherited methods */
 
