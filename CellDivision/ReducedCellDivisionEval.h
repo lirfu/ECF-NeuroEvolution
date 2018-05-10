@@ -18,11 +18,6 @@
 
 class ReducedCellDivisionEval : public EvaluateOp {
 private:
-    typedef struct {
-        uint index;
-        std::vector<uint> architecture;
-    } MachineState;
-
     /* Tree primitives */
 
     class ParallelSplit : public Tree::Primitives::Primitive {
@@ -48,10 +43,13 @@ private:
 
         void execute(void *mState, Tree::Tree &tree) {
             MachineState &state = *(MachineState *) mState;
-            // Execute left child in current layer, right child in next layer.
+            // Execute left child in current layer.
             getNextArgument(mState, tree);
+            // Execute right child in next layer.
             state.index++;
             getNextArgument(mState, tree);
+            // Return to original layer.
+            state.index--;
         }
     };
 
@@ -77,6 +75,11 @@ private:
     DerivativeFunction* strToFun(std::string *);
 
 public:
+    typedef struct {
+        uint index;
+        std::vector<uint> architecture;
+    } MachineState;
+
     /** Constructor.<br> Constructs the tree genotype and sets it to given state. */
     ReducedCellDivisionEval(StateP state);
 
