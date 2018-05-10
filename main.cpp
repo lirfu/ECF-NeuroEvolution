@@ -1,13 +1,13 @@
 #include <ecf/ECF.h>
-#include <NeuralNetwork.h>
 #include "CellDivision/ReducedCellDivisionEval.h"
-#include "problems/IProblem.h"
-#include "problems/XORProblem.h"
-#include "weightinitializers/RandomWeightInitializer.h"
+#include "PrintBestArchitectureOperator.h"
 
 int main(int argc, char **argv) {
     StateP state(new State);
     state->setEvalOp(new ReducedCellDivisionEval(state));
+
+    state->addOperator((PrintBestArchitectureOperatorP) new PrintBestArchitectureOperator);
+//    state->addOperator(new DisplayBestOperator);  // TODO Add graph drawing operator
 
     // initialize and start evaluation
     if (!state->initialize(argc, argv)) {

@@ -7,7 +7,7 @@ set(SOURCE_FILES main.cpp
         CellDivision/ReducedCellDivisionEval.cpp CellDivision/ReducedCellDivisionEval.h
         problems/XORProblem.cpp problems/XORProblem.h problems/IProblem.h
         lib/nnpp/matrix/MatrixDimension.cpp NetworkCenter.cpp NetworkCenter.h
-        )
+        DisplayBestOperator.cpp DisplayBestOperator.h PrintBestArchitectureOperator.cpp PrintBestArchitectureOperator.h)
 
 find_package(Boost)
 if(Boost_FOUND)
