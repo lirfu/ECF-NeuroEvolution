@@ -1,0 +1,3 @@
+[submodule "lib/nnpp"]
+	path = lib/nnpp
+	url = git@github.com:lirfu/LirfuNeuralNetwork-cpp.git
