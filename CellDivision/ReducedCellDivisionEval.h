@@ -20,6 +20,8 @@ class ReducedCellDivisionEval : public EvaluateOp {
 private:
     /* Parameter constants */
     std::string paramProblem_ = "nev.problem";
+    std::string paramProblemFunction_ = "nev.problem.function";
+
     std::string paramHiddenFunction_ = "nev.hiddenFunction";
     std::string paramOutputFunction_ = "nev.outputFunction";
     std::string paramLearningRate_ = "nev.learningRate";
