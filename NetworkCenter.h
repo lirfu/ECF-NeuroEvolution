@@ -29,7 +29,7 @@ public:
 
     ~NetworkCenter();
 
-    double testNetwork(std::vector<uint> architecture);
+    double testNetwork(std::vector<uint> architecture, bool silent= true);
 };
 
 

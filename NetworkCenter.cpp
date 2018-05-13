@@ -19,7 +19,7 @@ NetworkCenter::~NetworkCenter() {
     delete initializer_;
 }
 
-double NetworkCenter::testNetwork(std::vector<uint> architecture) {
+double NetworkCenter::testNetwork(std::vector<uint> architecture, bool silent) {
     // Build neural network
     vector<InnerLayer<Matrix> *> layers;
     uint lastSize = problem_->inputSize();
@@ -41,6 +41,8 @@ double NetworkCenter::testNetwork(std::vector<uint> architecture) {
     while (loss > minLoss_ && iteration < maxIterations_) {
         iteration++;
         loss = net.backpropagate(learningRate_, data);
+        if (!silent)
+            std::cout << "Iteration " << iteration << " has loss: " << loss << std::endl;
     }
 
     return loss;
