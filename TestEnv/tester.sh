@@ -2,10 +2,13 @@
 
 mkdir logs 2> /dev/null
 
-for f in tests/*
+for run in {1..5}
 do
-    echo "Running $f ..."
-    ././../cmake-build-debug/NeuroEvolution $f > "logs/$(basename $f).log" &
-done
+    for f in tests/*
+    do
+        echo "Running $f ..."
+        ././../cmake-build-debug/NeuroEvolution $f > "logs/$(basename $f)_$run.log" &
+    done
 
-wait
+    wait
+done

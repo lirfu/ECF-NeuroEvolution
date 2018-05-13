@@ -18,12 +18,12 @@
         <Entry key="nev.problem.function">onedim</Entry> <!-- onedim, rosenbrock, impulse -->
         <Entry key="nev.hiddenFunction">sigmoid</Entry> <!-- linear, sigmoid -->
         <Entry key="nev.outputFunction">linear</Entry>
-        <Entry key="nev.learningRate">1e-3</Entry>
+        <Entry key="nev.learningRate">5e-4</Entry>
         <Entry key="nev.minLoss">1e-9</Entry>
         <Entry key="nev.maxIterations">1000000</Entry>
 
         <Entry key="population.size">20</Entry>
-        <Entry key="mutation.indprob">0.35</Entry>
+        <Entry key="mutation.indprob">0.3</Entry>
 
         <Entry key="term.fitnessval">1e-9</Entry>
         <Entry key="term.maxgen">30</Entry>

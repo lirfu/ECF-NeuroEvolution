@@ -23,7 +23,7 @@
         <Entry key="nev.maxIterations">1000000</Entry>
 
         <Entry key="population.size">20</Entry>
-        <Entry key="mutation.indprob">0.35</Entry>
+        <Entry key="mutation.indprob">0.3</Entry>
 
         <Entry key="term.fitnessval">1e-9</Entry>
         <Entry key="term.maxgen">30</Entry>

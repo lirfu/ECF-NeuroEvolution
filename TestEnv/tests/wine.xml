@@ -6,7 +6,7 @@
     </Algorithm>
     <Genotype>
         <Tree>
-            <Entry key="maxdepth">20</Entry>
+            <Entry key="maxdepth">10</Entry>
             <Entry key="mindepth">1</Entry>
             <Entry key="functionset">P S</Entry>
             <Entry key="terminalset">E</Entry>
@@ -17,7 +17,7 @@
         <Entry key="nev.problem">wine</Entry>
         <Entry key="nev.hiddenFunction">sigmoid</Entry>
         <Entry key="nev.outputFunction">linear</Entry>
-        <Entry key="nev.learningRate">1e-3</Entry>
+        <Entry key="nev.learningRate">1e-4</Entry>
         <Entry key="nev.minLoss">1e-9</Entry>
         <Entry key="nev.maxIterations">10000000</Entry>
 
