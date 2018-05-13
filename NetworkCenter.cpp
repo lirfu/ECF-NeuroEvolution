@@ -39,9 +39,9 @@ double NetworkCenter::testNetwork(std::vector<uint> architecture, bool silent) {
     double loss = minLoss_ + 1;
     ulong iteration = 0;
     while (loss > minLoss_ && iteration < maxIterations_) {
-        iteration++;
         loss = net.backpropagate(learningRate_, data);
-        if (!silent)
+        iteration++;
+        if (!silent && iteration % 1000 == 0)
             std::cout << "Iteration " << iteration << " has loss: " << loss << std::endl;
     }
 
