@@ -35,7 +35,6 @@ int main(int argc, char **argv) {
         coldStart = false;
     }
     std::cout << "]" << std::endl;
-    std::cout << "Fitness: " << hof[0]->getFitness() << std::endl;
     std::cout << tree->toString() << std::endl;
 
     return 0;
