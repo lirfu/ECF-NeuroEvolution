@@ -2,8 +2,8 @@
 // Created by lirfu on 28.04.18..
 //
 
-#ifndef NEUROEVOLUTION_EVALUATECELLDIVISION_H
-#define NEUROEVOLUTION_EVALUATECELLDIVISION_H
+#ifndef NEUROEVOLUTION_REDUCEDCELLDIVISIONEVAL_H
+#define NEUROEVOLUTION_REDUCEDCELLDIVISIONEVAL_H
 
 
 #include <ecf/EvaluateOp.h>
@@ -20,7 +20,7 @@ class ReducedCellDivisionEval : public EvaluateOp {
 private:
     /* Parameter constants */
     std::string paramProblem_ = "nev.problem";
-    std::string paramProblemFunction_ = "nev.problem.function";
+    std::string paramProblemExtra_ = "nev.problem.extra";
 
     std::string paramHiddenFunction_ = "nev.hiddenFunction";
     std::string paramOutputFunction_ = "nev.outputFunction";
@@ -28,8 +28,10 @@ private:
     std::string paramMinLoss_ = "nev.minLoss";
     std::string paramMaxIterations_ = "nev.maxIterations";
 
-    /* Tree primitives */
+    DerivativeFunction *strToFun(std::string *);
 
+protected:
+    /* Tree primitives */
     class ParallelSplit : public Tree::Primitives::Primitive {
     public:
         ParallelSplit() {
@@ -80,11 +82,13 @@ private:
         }
     };
 
-    NetworkCenter *networkCenter_;
+    IProblem *codeDefinedProblem_ = nullptr;
 
-    DerivativeFunction *strToFun(std::string *);
+    ReducedCellDivisionEval(){}
 
 public:
+    NetworkCenter *networkCenter_;
+
     typedef struct {
         uint index;
         std::vector<uint> architecture;
@@ -92,6 +96,9 @@ public:
 
     /** Constructor.<br> Constructs the tree genotype and sets it to given state. */
     ReducedCellDivisionEval(StateP state);
+
+    /** Constructor.<br> Constructs the tree genotype and sets it to given state and uses the given problem. */
+    ReducedCellDivisionEval(StateP state, IProblem &);
 
     ~ReducedCellDivisionEval();
 
@@ -105,4 +112,4 @@ public:
 };
 
 
-#endif //NEUROEVOLUTION_EVALUATECELLDIVISION_H
+#endif //NEUROEVOLUTION_REDUCEDCELLDIVISIONEVAL_H

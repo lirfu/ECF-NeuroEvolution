@@ -6,9 +6,12 @@
 #include <ecf/tree/Tree.h>
 #include <ecf/FitnessMin.h>
 #include <NeuralNetwork.h>
+#include <cfloat>
+#include <utility>
 #include "ReducedCellDivisionEval.h"
 #include "../problems/XORProblem.h"
 #include "../problems/RegressionProblem.h"
+#include "../problems/WineQualityProblem.h"
 
 ReducedCellDivisionEval::ReducedCellDivisionEval(StateP state) {
     // Construct reduced grammar
@@ -23,6 +26,11 @@ ReducedCellDivisionEval::ReducedCellDivisionEval(StateP state) {
 
     // Set constructed grammar as genotype
     state->addGenotype(tree);
+}
+
+ReducedCellDivisionEval::ReducedCellDivisionEval(StateP state, IProblem &problem) : ReducedCellDivisionEval(
+        std::move(state)) {
+    codeDefinedProblem_ = &problem;
 }
 
 ReducedCellDivisionEval::~ReducedCellDivisionEval() {
@@ -40,13 +48,13 @@ void ReducedCellDivisionEval::registerParameters(StateP state) {
 
     // Problem params.
     state->getRegistry()->registerEntry(paramProblem_, (voidP) nullptr, ECF::STRING);
-    state->getRegistry()->registerEntry(paramProblemFunction_, (voidP) new std::string("onedim"), ECF::STRING);
+    state->getRegistry()->registerEntry(paramProblemExtra_, (voidP) new std::string("onedim"), ECF::STRING);
     // Network params.
     state->getRegistry()->registerEntry(paramHiddenFunction_, (voidP) new std::string("sigmoid"), ECF::STRING);
-    state->getRegistry()->registerEntry(paramOutputFunction_, (voidP) new std::string("sigmoid"), ECF::STRING);
+    state->getRegistry()->registerEntry(paramOutputFunction_, (voidP) new std::string("linear"), ECF::STRING);
     state->getRegistry()->registerEntry(paramLearningRate_, (voidP) new double(1e-3), ECF::DOUBLE);
     state->getRegistry()->registerEntry(paramMinLoss_, (voidP) new double(0), ECF::DOUBLE);
-    state->getRegistry()->registerEntry(paramMaxIterations_, (voidP) new uint(-1), ECF::UINT);
+    state->getRegistry()->registerEntry(paramMaxIterations_, (voidP) new uint(UINT_MAX), ECF::UINT);
 }
 
 DerivativeFunction *ReducedCellDivisionEval::strToFun(std::string *str) {
@@ -65,7 +73,7 @@ DerivativeFunction *ReducedCellDivisionEval::strToFun(std::string *str) {
 bool ReducedCellDivisionEval::initialize(StateP state) {
     // Problem params
     std::string *problemString = ((std::string *) state->getRegistry()->getEntry(paramProblem_).get());
-    std::string *problemFunction = ((std::string *) state->getRegistry()->getEntry(paramProblemFunction_).get());
+    std::string *problemExtra = ((std::string *) state->getRegistry()->getEntry(paramProblemExtra_).get());
 
     // Network params.
     std::string *hiddenFString = ((std::string *) state->getRegistry()->getEntry(paramHiddenFunction_).get());
@@ -75,17 +83,19 @@ bool ReducedCellDivisionEval::initialize(StateP state) {
     uint maxIter = *((uint *) state->getRegistry()->getEntry(paramMaxIterations_).get());
 
     try {
-        IProblem *problem = nullptr;
-        if (!problemString) {
-            throw runtime_error("Problem not defined!");
-        } else if (*problemString == "xor") {
-            problem = new XORProblem();
-        } else if (*problemString == "function") {
-            problem = new RegressionProblem(problemFunction, 100);
-        } else if (*problemString == "wine") {
-            //TODO
-        } else {
-            throw runtime_error("Unrecognized problem: " + *problemString);
+        IProblem *problem = codeDefinedProblem_;
+        if (!problem) {  // if the problem wasn't defined by code, try using state defined problem.
+            if (!problemString) {
+                throw runtime_error("Problem not defined!");
+            } else if (*problemString == "xor") {
+                problem = new XORProblem();
+            } else if (*problemString == "function") {
+                problem = new RegressionProblem(*problemExtra, 30);
+            } else if (*problemString == "wine") {
+                problem = new WineQualityProblem(*problemExtra);
+            } else {
+                throw runtime_error("Unrecognized problem: " + *problemString);
+            }
         }
 
         networkCenter_ = new NetworkCenter(problem, strToFun(hiddenFString), strToFun(outoutFString),
@@ -108,7 +118,9 @@ FitnessP ReducedCellDivisionEval::evaluate(IndividualP p) {
 //    cout << endl;
 
     // Build, train and validate neural network on given architecture.
-    double loss = networkCenter_->testNetwork(state.architecture);
+    double loss = networkCenter_->trainNetwork(state.architecture, true, false);
+    if (isnan(loss))
+        loss = DBL_MAX;
 
     FitnessP fitness(new FitnessMin);
     fitness->setValue(loss);
