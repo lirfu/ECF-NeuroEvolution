@@ -109,7 +109,7 @@ bool ReducedCellDivisionEval::initialize(StateP state) {
 FitnessP ReducedCellDivisionEval::evaluate(IndividualP p) {
     Tree::Tree *tree = (Tree::Tree *) p->getGenotype().get();
     // Populate architecture using a machine state.
-    MachineState state = {.index = 0, .architecture=std::vector<uint>()};
+    MachineState state = {.layer = 0, .architecture=std::vector<uint>()};
     tree->execute(&state);
 
 //    cout << "Archit: ";

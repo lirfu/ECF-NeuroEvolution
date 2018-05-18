@@ -11,7 +11,7 @@ bool PrintBestArchitectureOperator::operate(StateP p) {
     std::vector<IndividualP> hof = p->getHoF()->getBest();
     Tree::Tree *tree = (Tree::Tree *) hof[0]->getGenotype().get();
 
-    ReducedCellDivisionEval::MachineState state = {.index = 0, .architecture=std::vector<uint>()};
+    ReducedCellDivisionEval::MachineState state = {.layer = 0, .architecture=std::vector<uint>()};
     tree->execute(&state);
 
     std::cout << "Best architecture: [";

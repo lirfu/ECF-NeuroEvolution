@@ -58,10 +58,10 @@ protected:
             // Execute left child in current layer.
             getNextArgument(mState, tree);
             // Execute right child in next layer.
-            state.index++;
+            state.layer++;
             getNextArgument(mState, tree);
             // Return to original layer.
-            state.index--;
+            state.layer--;
         }
     };
 
@@ -75,10 +75,10 @@ protected:
         void execute(void *mState, Tree::Tree &tree) {
             MachineState &state = *(MachineState *) mState;
             // New layer if increased index.
-            if (state.index >= state.architecture.size())
+            if (state.layer >= state.architecture.size())
                 state.architecture.resize(state.architecture.size() + 1);
             // Increase neuron number in this layer.
-            state.architecture[state.index]++;
+            state.architecture[state.layer]++;
         }
     };
 
@@ -90,7 +90,7 @@ public:
     NetworkCenter *networkCenter_;
 
     typedef struct {
-        uint index;
+        uint layer;
         std::vector<uint> architecture;
     } MachineState;
 
