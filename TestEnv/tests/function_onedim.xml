@@ -6,8 +6,8 @@
     </Algorithm>
     <Genotype>
         <Tree>
-            <Entry key="maxdepth">6</Entry>
-            <Entry key="mindepth">1</Entry>
+            <Entry key="maxdepth">5</Entry>
+            <Entry key="mindepth">3</Entry>
             <Entry key="functionset">P S</Entry>
             <Entry key="terminalset">E</Entry>
         </Tree>
@@ -15,18 +15,18 @@
 
     <Registry>
         <Entry key="nev.problem">function</Entry> <!-- xor, function, wine -->
-        <Entry key="nev.problem.function">onedim</Entry> <!-- onedim, rosenbrock, impulse -->
+        <Entry key="nev.problem.extra">onedim</Entry> <!-- onedim, rosenbrock, impulse -->
         <Entry key="nev.hiddenFunction">sigmoid</Entry> <!-- linear, sigmoid -->
         <Entry key="nev.outputFunction">linear</Entry>
-        <Entry key="nev.learningRate">5e-4</Entry>
-        <Entry key="nev.minLoss">1e-9</Entry>
-        <Entry key="nev.maxIterations">1000000</Entry>
+        <Entry key="nev.learningRate">1e-2</Entry>
+        <Entry key="nev.minLoss">5e-3</Entry>
+        <Entry key="nev.maxIterations">10000</Entry>
 
-        <Entry key="population.size">20</Entry>
-        <Entry key="mutation.indprob">0.3</Entry>
+        <Entry key="population.size">10</Entry>
+        <Entry key="mutation.indprob">0.5</Entry>
 
-        <Entry key="term.fitnessval">1e-9</Entry>
-        <Entry key="term.maxgen">30</Entry>
+        <Entry key="term.fitnessval">5e-3</Entry>
+        <Entry key="term.maxgen">50</Entry>
         <!-- <Entry key="term.maxtime">0</Entry> -->
 
         <Entry key="log.level">3</Entry>
