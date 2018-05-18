@@ -8,11 +8,13 @@
 
 #include "IProblem.h"
 
-class WineQualityProblem : public IProblem{
+class WineQualityProblem : public IProblem {
 private:
+    vector<Matrix *> inputs_;
+    vector<Matrix *> outputs_;
     vector<Data *> dataset_;
 public:
-    WineQualityProblem();
+    WineQualityProblem(std::string &filepath);
 
     ~WineQualityProblem();
 
@@ -20,7 +22,17 @@ public:
 
     uint outputSize() override;
 
-    vector<Data *> *getDataset() override;
+    vector<Matrix *> &getInputs() override {
+        return inputs_;
+    }
+
+    vector<Matrix *> &getOutputs() override {
+        return outputs_;
+    }
+
+    vector<Data *> &getTrainBundle() override {
+        return dataset_;
+    }
 
     string toLabel(Matrix &matrix) override;
 };

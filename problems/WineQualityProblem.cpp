@@ -7,12 +7,9 @@
 #include "WineQualityProblem.h"
 
 
-WineQualityProblem::WineQualityProblem() {
-    vector<Matrix *> inputs;
-    vector<Matrix *> outputs;
-
+WineQualityProblem::WineQualityProblem(std::string &filepath) {
     ifstream file;
-    file.open("../wine_data/winequality-joined.csv");
+    file.open(filepath);
     if (file.is_open()) {
         string line;
         while (getline(file, line)) {
@@ -28,11 +25,11 @@ WineQualityProblem::WineQualityProblem() {
                     buffer += c;
                 }
             }
-            inputs.push_back(new Matrix(1, 11, rowIn));
-            outputs.push_back(new Matrix(1, 1, {stod(buffer)}));
+            inputs_.push_back(new Matrix(1, 11, rowIn));
+            outputs_.push_back(new Matrix(1, 1, {stod(buffer)}));
         }
         // Store data divided into train/validation sets
-        dataset_.push_back(DataUtils::shuffleData(DataUtils::separateData<Matrix>(&inputs, &outputs, 0.7)));
+        dataset_.push_back(DataUtils::shuffleData(DataUtils::separateData<Matrix>(&inputs_, &outputs_, 0.7)));
     } else {
         throw runtime_error("Cannot open file!");
     }
@@ -49,10 +46,6 @@ uint WineQualityProblem::inputSize() {
 
 uint WineQualityProblem::outputSize() {
     return 1;
-}
-
-vector<Data *> *WineQualityProblem::getDataset() {
-    return &dataset_;
 }
 
 string WineQualityProblem::toLabel(Matrix &matrix) {

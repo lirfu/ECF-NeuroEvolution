@@ -7,28 +7,22 @@
 
 
 XORProblem::XORProblem() {
-    vector<Matrix *> *inputs = new vector<Matrix *>();
-    inputs->push_back(new Matrix(1, 2, {-1, -1}));
-    inputs->push_back(new Matrix(1, 2, {-1, 1}));
-    inputs->push_back(new Matrix(1, 2, {1, -1}));
-    inputs->push_back(new Matrix(1, 2, {1, 1}));
+    inputs_.push_back(new Matrix(1, 2, {-1, -1}));
+    inputs_.push_back(new Matrix(1, 2, {-1, 1}));
+    inputs_.push_back(new Matrix(1, 2, {1, -1}));
+    inputs_.push_back(new Matrix(1, 2, {1, 1}));
 
-    vector<Matrix *> *outputs = new vector<Matrix *>();
-    outputs->push_back(new Matrix(1, 1, {-1}));
-    outputs->push_back(new Matrix(1, 1, {1}));
-    outputs->push_back(new Matrix(1, 1, {1}));
-    outputs->push_back(new Matrix(1, 1, {-1}));
+    outputs_.push_back(new Matrix(1, 1, {-1}));
+    outputs_.push_back(new Matrix(1, 1, {1}));
+    outputs_.push_back(new Matrix(1, 1, {1}));
+    outputs_.push_back(new Matrix(1, 1, {-1}));
 
-    batches_.push_back(new SimpleData(inputs, outputs));
+    trainBundle_.push_back(new SimpleData(&inputs_, &outputs_));
 }
 
 XORProblem::~XORProblem() {
-    for (Data *d : batches_)
+    for (Data *d : trainBundle_)
         delete d;
-}
-
-vector<Data *> *XORProblem::getDataset() {
-    return &batches_;
 }
 
 uint XORProblem::inputSize() {

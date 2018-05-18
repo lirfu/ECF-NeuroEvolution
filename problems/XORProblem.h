@@ -9,7 +9,9 @@
 
 class XORProblem : public IProblem {
 private:
-    vector<Data *> batches_;
+    vector<Matrix *> inputs_;
+    vector<Matrix *> outputs_;
+    vector<Data *> trainBundle_;
 public:
     XORProblem();
 
@@ -19,7 +21,17 @@ public:
 
     uint outputSize() override;
 
-    vector<Data *> *getDataset() override;
+    vector<Matrix *> &getInputs() override {
+        return inputs_;
+    }
+
+    vector<Matrix *> &getOutputs() override {
+        return outputs_;
+    }
+
+    vector<Data *> &getTrainBundle() override {
+        return trainBundle_;
+    }
 
     std::string toLabel(Matrix &matrix) override;
 

@@ -28,14 +28,16 @@ private:
     }
 
     double impulseFunc(double x) {
-        return sgn(x) - sgn(x - 1) / 2;
+        return (sgn(x + 2) - sgn(x - 2)) / 2.;
     }
 
     uint inputSize_;
-    vector<Data *> dataset_;
+    vector<Matrix *> inputs_;
+    vector<Matrix *> outputs_;
+    vector<Data *> trainBundle_;
 
 public:
-    explicit RegressionProblem(string *functionName, uint samplesNum);
+    explicit RegressionProblem(string &functionName, uint samplesNum);
 
     ~RegressionProblem();
 
@@ -47,8 +49,16 @@ public:
         return 1;
     }
 
-    vector<Data *> *getDataset() override {
-        return &dataset_;
+    vector<Matrix *> &getInputs() override {
+        return inputs_;
+    }
+
+    vector<Matrix *> &getOutputs() override {
+        return outputs_;
+    }
+
+    vector<Data *> &getTrainBundle() override {
+        return trainBundle_;
     }
 
     string toLabel(Matrix &matrix) override;
