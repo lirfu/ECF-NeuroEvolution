@@ -56,7 +56,7 @@ double NetworkCenter::trainNetwork(NeuralNetwork &net, bool silent, bool graph) 
             if (!silent) {
                 if (graph)
                     std::cout << "echo ";
-//                std::cout << "Iteration " << iteration << " has loss: " << loss << std::endl;
+                std::cout << "Iteration " << iteration << " has loss: " << loss << std::endl;
             }
             if (graph) {
                 cout << "clear" << endl; // Clear the graphs.

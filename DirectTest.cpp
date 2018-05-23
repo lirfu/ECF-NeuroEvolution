@@ -26,12 +26,12 @@ void DirectTest::testXOR() {
 
 void DirectTest::testFunctionOnedim() {
 //    cout << "Running onedim..." << endl;
-    for(uint i=0; i<20; i++) {
+//    for(uint i=0; i<20; i++) {
         vector<uint> architecture({7, 9});
         string func("onedim");
         NetworkCenter net(new RegressionProblem(func, 30), new Sigmoid(), new Linear(), 1e-2, 5e-3, 1000000);
-        double loss = net.trainNetwork(architecture, false);
-    }
+        double loss = net.trainNetwork(architecture, false, true);
+//    }
 //    if (loss <= 1e-9) {
 //        cout << "PASS" << endl;
 //    } else {
