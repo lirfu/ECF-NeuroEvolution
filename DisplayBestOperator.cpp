@@ -3,27 +3,24 @@
 //
 
 #include <ecf/ECF_base.h>
+#include <ecf/tree/Tree.h>
 #include "DisplayBestOperator.h"
+#include "CellDivision/ReducedCellDivisionEval.h"
+
+DisplayBestOperator::DisplayBestOperator(NetworkCenter *center) {
+    networkCenter_ = center;
+}
 
 bool DisplayBestOperator::initialize(StateP p) {
-    // TODO Add extended commands to java program
-//    std::cout << "init 2 1" << std::endl;
-//    std::cout << "clear 1" << std::endl;
-//    std::cout << "clear 2" << std::endl;
     return Operator::initialize(p);
 }
 
 bool DisplayBestOperator::operate(StateP p) {
-//    // Draw the output of best network.
-//    std::cout << "clear 1" << std::endl;
-//    for (uint i = 0; i < data.size(); i++) {
-//        for (uint j = 0; j < data[i]->validationSize(); j++) {
-//            std::cout << "add 1 " << problem_->toLabel(net.getOutput(*data[i]->getValidationInputs()->at(j)))
-//                      << " " << problem_->toLabel(*data[i]->getValidationOutputs()->at(j)) << std::endl;
-//        }
-//    }
+    std::vector<IndividualP> hof = p->getHoF()->getBest();
+    Tree::Tree *tree = (Tree::Tree *) hof[0]->getGenotype().get();
 
-//    // Add loss value to loss graph.
-//    std::cout << "add 2 "<< loss << std::endl;
+    ReducedCellDivisionEval::MachineState state = {.layer = 0, .architecture=std::vector<uint>()};
+    tree->execute(&state);
+    networkCenter_->trainNetwork(state.architecture, false, true);
     return true;
 }

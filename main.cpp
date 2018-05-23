@@ -1,7 +1,6 @@
 #include <ecf/ECF.h>
 #include "CellDivision/ReducedCellDivisionEval.h"
 #include "PrintBestArchitectureOperator.h"
-#include "problems/RegressionProblem.h"
 
 int main(int argc, char **argv) {
 //    DirectTest::testAll();

@@ -15,17 +15,18 @@
 
     <Registry>
         <Entry key="nev.problem">wine</Entry>
+        <Entry key="nev.problem.extra">/home/lirfu/PersonalWorkspace/NeuroEvolution/wine_data/winequality-joined.csv</Entry>
         <Entry key="nev.hiddenFunction">sigmoid</Entry>
         <Entry key="nev.outputFunction">linear</Entry>
-        <Entry key="nev.learningRate">1e-4</Entry>
+        <Entry key="nev.learningRate">1e-3</Entry>
         <Entry key="nev.minLoss">1e-9</Entry>
-        <Entry key="nev.maxIterations">10000000</Entry>
+        <Entry key="nev.maxIterations">1</Entry>
 
-        <Entry key="population.size">12</Entry>
-        <Entry key="mutation.indprob">0.35</Entry>
+        <Entry key="population.size">10</Entry>
+        <Entry key="mutation.indprob">0.3</Entry>
 
         <Entry key="term.fitnessval">1e-9</Entry>
-        <Entry key="term.maxgen">30</Entry>
+        <Entry key="term.maxgen">50</Entry>
         <!-- <Entry key="term.maxtime">0</Entry> -->
 
         <Entry key="log.level">3</Entry>

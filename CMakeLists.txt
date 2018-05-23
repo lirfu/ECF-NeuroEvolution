@@ -5,7 +5,9 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(SOURCE_FILES main.cpp
         CellDivision/ReducedCellDivisionEval.cpp CellDivision/ReducedCellDivisionEval.h
-        lib/nnpp/matrix/MatrixDimension.cpp NetworkCenter.cpp NetworkCenter.h
+        CellDivision/CellDivisionEval.cpp CellDivision/CellDivisionEval.h
+        lib/nnpp/matrix/MatrixDimension.cpp
+        NetworkCenter.cpp NetworkCenter.h
         DisplayBestOperator.cpp DisplayBestOperator.h
         PrintBestArchitectureOperator.cpp PrintBestArchitectureOperator.h
         problems/IProblem.h
@@ -18,6 +20,8 @@ find_package(Boost)
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
 endif()
+
+add_definitions(-DOUTPUT_RESULTS)
 
 add_subdirectory(lib/nnpp)
 include_directories(lib/nnpp)

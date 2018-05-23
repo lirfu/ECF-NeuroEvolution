@@ -30,7 +30,6 @@ private:
 
     DerivativeFunction *strToFun(std::string *);
 
-protected:
     /* Tree primitives */
     class ParallelSplit : public Tree::Primitives::Primitive {
     public:
@@ -82,6 +81,7 @@ protected:
         }
     };
 
+protected:
     IProblem *codeDefinedProblem_ = nullptr;
 
     ReducedCellDivisionEval(){}

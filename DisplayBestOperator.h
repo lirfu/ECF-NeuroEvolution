@@ -8,9 +8,13 @@
 
 #include <ecf/Operator.h>
 #include <ecf/ECF_base.h>
+#include "NetworkCenter.h"
 
 class DisplayBestOperator : public Operator {
+private:
+    NetworkCenter *networkCenter_;
 public:
+    explicit DisplayBestOperator(NetworkCenter *center);
     bool initialize(StateP p) override;
 
     bool operate(StateP p) override;
