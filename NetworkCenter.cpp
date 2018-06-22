@@ -49,7 +49,10 @@ double NetworkCenter::trainNetwork(NeuralNetwork &net, bool silent, bool graph) 
     double loss = minLoss_ + 1;
     ulong iteration = 0;
     while (loss > minLoss_ && iteration < maxIterations_) {
-        loss = net.backpropagate(learningRate_, data);
+        loss = 0;
+        for (Data *d : data)
+            loss += net.backpropagate(learningRate_, problem_->getLossFunction(), *d);
+        loss /= data.size();
         iteration++;
 
         if (iteration % 1000 == 0) {
@@ -74,7 +77,7 @@ double NetworkCenter::trainNetwork(NeuralNetwork &net, bool silent, bool graph) 
         if (graph)
             std::cout << "echo ";
 //        std::cout << "Final iteration " << iteration << " has loss: " << loss << std::endl;
-        std::cout<<iteration<< " "<<loss<<endl;
+        std::cout << iteration << " " << loss << endl;
     }
     return loss;
 }
