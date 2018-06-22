@@ -16,7 +16,7 @@ RegressionProblem::RegressionProblem(string &functionName, uint samplesNum) {
             outputs_.push_back(new Matrix(1, 1, {oneDimensionalFunc(x)}));
         }
         // Store data divided into train/validation sets
-        trainBundle_.push_back(DataUtils::shuffleData(DataUtils::separateData<Matrix>(&inputs_, &outputs_, 0.7)));
+        trainBundle_.push_back(DataUtils::shuffleData(DataUtils::separateData<Matrix>(&inputs_, &outputs_, 0.5)));
     } else if (functionName == paramRosenbrock_) {
         inputSize_ = 2;
         // Generate data.
@@ -45,6 +45,10 @@ RegressionProblem::RegressionProblem(string &functionName, uint samplesNum) {
 RegressionProblem::~RegressionProblem() {
     for (Data *d : trainBundle_)
         delete d;
+}
+
+LossFunction<Matrix> &RegressionProblem::getLossFunction() {
+    return lossFunction_;
 }
 
 string RegressionProblem::toLabel(Matrix &matrix) {

@@ -6,6 +6,7 @@
 #define NEUROEVOLUTION_WINEQUALITYPROBLEM_H
 
 
+#include <functions/SquareLoss.h>
 #include "IProblem.h"
 
 class WineQualityProblem : public IProblem {
@@ -13,6 +14,7 @@ private:
     vector<Matrix *> inputs_;
     vector<Matrix *> outputs_;
     vector<Data *> dataset_;
+    SquareLoss<Matrix> lossFunction_;
 public:
     WineQualityProblem(std::string &filepath);
 
@@ -35,6 +37,8 @@ public:
     }
 
     string toLabel(Matrix &matrix) override;
+
+    LossFunction<Matrix> &getLossFunction() override;
 };
 
 

@@ -7,6 +7,7 @@
 
 
 #include <data/Data.h>
+#include <functions/LossFunction.h>
 
 class IProblem {
 public:
@@ -24,6 +25,9 @@ public:
 
     /** Get data bundle used for training net (might include cross-validation, pre-processed inputs, etc.). */
     virtual std::vector<Data *> &getTrainBundle()=0;
+
+    /** Get the loss function of the problem. */
+    virtual LossFunction<Matrix> &getLossFunction()=0;
 
     /** Get string representation of the network's output matrix (useful for one-hot-to-class in classification). */
     virtual std::string toLabel(Matrix &)=0;

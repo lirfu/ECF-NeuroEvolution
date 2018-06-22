@@ -48,6 +48,10 @@ uint WineQualityProblem::outputSize() {
     return 1;
 }
 
+LossFunction<Matrix> &WineQualityProblem::getLossFunction() {
+    return lossFunction_;
+}
+
 string WineQualityProblem::toLabel(Matrix &matrix) {
     return std::to_string((uint) round(matrix.get(0, 0)));
 }

@@ -36,3 +36,7 @@ uint XORProblem::outputSize() {
 std::string XORProblem::toLabel(Matrix &matrix) {
     return std::to_string(matrix.get(0, 0) > 0 ? 1 : -1);
 }
+
+LossFunction<Matrix> &XORProblem::getLossFunction() {
+    return lossFunction_;
+}

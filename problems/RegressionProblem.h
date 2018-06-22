@@ -7,6 +7,7 @@
 
 
 #include <cmath>
+#include <functions/SquareLoss.h>
 #include "IProblem.h"
 
 class RegressionProblem : public IProblem {
@@ -14,9 +15,10 @@ private:
     std::string paramOneDim_ = "onedim";
     std::string paramRosenbrock_ = "rosenbrock";
     std::string paramImpulse_ = "impulse";
+    SquareLoss<Matrix> lossFunction_;
 
     double oneDimensionalFunc(double x) {
-        return x * sin(x * x) + 5;
+        return 0.2 * sin(x) + 0.2 * sin(4 * x + M_PI / 7) + 0.5;
     }
 
     double Rosenbrock(double x, double y) {
@@ -62,6 +64,8 @@ public:
     }
 
     string toLabel(Matrix &matrix) override;
+
+    LossFunction<Matrix> &getLossFunction() override;
 };
 
 

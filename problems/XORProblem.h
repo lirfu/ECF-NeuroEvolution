@@ -5,6 +5,7 @@
 #ifndef NEUROEVOLUTION_XORPROBLEM_H
 #define NEUROEVOLUTION_XORPROBLEM_H
 
+#include <functions/SquareLoss.h>
 #include "IProblem.h"
 
 class XORProblem : public IProblem {
@@ -12,6 +13,7 @@ private:
     vector<Matrix *> inputs_;
     vector<Matrix *> outputs_;
     vector<Data *> trainBundle_;
+    SquareLoss<Matrix> lossFunction_;
 public:
     XORProblem();
 
@@ -34,6 +36,8 @@ public:
     }
 
     std::string toLabel(Matrix &matrix) override;
+
+    LossFunction<Matrix> &getLossFunction() override;
 
 };
 
