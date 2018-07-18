@@ -5,7 +5,7 @@
 #ifndef NEUROEVOLUTION_XORPROBLEM_H
 #define NEUROEVOLUTION_XORPROBLEM_H
 
-#include <functions/SquareLoss.h>
+#include <loss/SquareLoss.h>
 #include "IProblem.h"
 
 class XORProblem : public IProblem {

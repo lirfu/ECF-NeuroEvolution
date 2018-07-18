@@ -6,7 +6,7 @@
 #define NEUROEVOLUTION_WINEQUALITYPROBLEM_H
 
 
-#include <functions/SquareLoss.h>
+#include <loss/SquareLoss.h>
 #include "IProblem.h"
 
 class WineQualityProblem : public IProblem {

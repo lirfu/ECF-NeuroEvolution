@@ -7,7 +7,7 @@
 
 
 #include <cmath>
-#include <functions/SquareLoss.h>
+#include <loss/SquareLoss.h>
 #include "IProblem.h"
 
 class RegressionProblem : public IProblem {

@@ -7,7 +7,7 @@
 
 
 #include <data/Data.h>
-#include <functions/LossFunction.h>
+#include <loss/LossFunction.h>
 
 class IProblem {
 public:
