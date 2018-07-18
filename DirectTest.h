@@ -10,9 +10,9 @@ class DirectTest {
 public:
     static void testAll(){
 //        testXOR();
-        testFunctionOnedim(); // TODO NOT OPTIMAL YET!!
-//        testFunctionRosenbrock(); // TODO NOT OPTIMAL YET!!
-//        testFunctionImpulse(); // TODO NOT OPTIMAL YET!!
+        testFunctionOnedim();
+//        testFunctionRosenbrock();
+//        testFunctionImpulse();
 //        testWineQuality();
     }
 
