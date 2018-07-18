@@ -17,7 +17,7 @@ bool DisplayBestOperator::operate(StateP p) {
 //    // Draw the output of best network.
 //    std::cout << "clear 1" << std::endl;
 //    for (uint i = 0; i < data.size(); i++) {
-//        for (uint j = 0; j < data[i]->testSize(); j++) {
+//        for (uint j = 0; j < data[i]->validationSize(); j++) {
 //            std::cout << "add 1 " << problem_->toLabel(net.getOutput(*data[i]->getValidationInputs()->at(j)))
 //                      << " " << problem_->toLabel(*data[i]->getValidationOutputs()->at(j)) << std::endl;
 //        }
