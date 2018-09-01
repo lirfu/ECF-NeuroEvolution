@@ -3,6 +3,7 @@
 //
 
 #include "NetworkCenter.h"
+#include "UnstructuredLayer.h"
 
 NetworkCenter::NetworkCenter(IProblem *problem, DerivativeFunction *hiddenFunction, DerivativeFunction *outputFunction,
                              double learningRate, double minLoss, uint maxIterations)
@@ -17,24 +18,6 @@ NetworkCenter::NetworkCenter(IProblem *problem, DerivativeFunction *hiddenFuncti
 NetworkCenter::~NetworkCenter() {
     delete problem_;
     delete initializer_;
-}
-
-NeuralNetwork NetworkCenter::buildNetwork(std::vector<uint> &architecture) {
-    // Build neural network
-    vector<InnerLayer<Matrix> *> layers;
-    uint lastSize = problem_->inputSize();
-    for (uint val : architecture) {
-        layers.push_back(new FullyConnectedLayer<Matrix>(lastSize, val, hiddenFunction_, descendMethod_));
-        lastSize = val;
-    }
-    layers.push_back(new FullyConnectedLayer<Matrix>(
-            lastSize, problem_->outputSize(), outputFunction_, descendMethod_));
-    return {new InputLayer<Matrix>(problem_->inputSize()), layers};
-}
-
-double NetworkCenter::trainNetwork(std::vector<uint> &architecture, bool silent, bool graph) {
-    NeuralNetwork net = buildNetwork(architecture);
-    return trainNetwork(net, silent, graph);
 }
 
 double NetworkCenter::trainNetwork(NeuralNetwork &net, bool silent, bool graph) {

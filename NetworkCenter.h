@@ -18,9 +18,6 @@ class NetworkCenter {
 private:
     /* Network definition parameters. */
     WeightInitializer *initializer_;
-    shared_ptr<DerivativeFunction> hiddenFunction_;
-    shared_ptr<DerivativeFunction> outputFunction_;
-    shared_ptr<DescendMethod> descendMethod_;
 public:
     /* Problem to solve. */
     IProblem *problem_;
@@ -28,17 +25,24 @@ public:
     double learningRate_;
     double minLoss_;
     uint maxIterations_;
+    shared_ptr<DerivativeFunction> hiddenFunction_;
+    shared_ptr<DerivativeFunction> outputFunction_;
+    shared_ptr<DescendMethod> descendMethod_;
 
     NetworkCenter(IProblem *, DerivativeFunction *hiddenFunction,
                   DerivativeFunction *outputFunction, double learningRate, double minLoss, uint maxIterations);
 
     ~NetworkCenter();
 
-    NeuralNetwork buildNetwork(std::vector<uint> &architecture);
+    double trainNetwork(NeuralNetwork &network, bool silent, bool graph = false);
 
-    double trainNetwork(NeuralNetwork &network, bool silent, bool graph);
+    uint inputSize() {
+        return problem_->inputSize();
+    }
 
-    double trainNetwork(std::vector<uint> &architecture, bool silent, bool graph = false);
+    uint outputSize() {
+        return problem_->outputSize();
+    }
 };
 
 
