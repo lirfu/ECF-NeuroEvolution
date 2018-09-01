@@ -17,7 +17,8 @@ XORProblem::XORProblem() {
     outputs_.push_back(new Matrix(1, 1, {1}));
     outputs_.push_back(new Matrix(1, 1, {-1}));
 
-    trainBundle_.push_back(new SimpleData(&inputs_, &outputs_));
+    for (uint i = 0; i < inputs_.size(); i++)
+        trainBundle_.push_back(new SimpleData(inputs_[i], outputs_[i]));
 }
 
 XORProblem::~XORProblem() {
