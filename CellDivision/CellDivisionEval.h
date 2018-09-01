@@ -6,9 +6,11 @@
 #define NEUROEVOLUTION_CELLDIVISIONEVAL_H
 
 
+#include <ecf/tree/Primitive.h>
 #include "ReducedCellDivisionEval.h"
+#include "../UnstructuredLayer.h"
 
-class CellDivisionEval : public ReducedCellDivisionEval {
+class CellDivisionEval : public ANeuralEval {
 private:
     /* Tree primitives */
     class ParallelSplit : public Tree::Primitives::Primitive {
@@ -20,8 +22,10 @@ private:
 
         void execute(void *mState, Tree::Tree &tree) {
             MachineState &state = *(MachineState *) mState;
-            mState
+            UnstructuredLayer::Neuron *n = state.layer.parallelSplitNeuronAt(state.neuronIndex);
             getNextArgument(mState, tree);
+            state.layer.addNeuron(n);
+            state.neuronIndex++;
             getNextArgument(mState, tree);
         }
     };
@@ -35,13 +39,11 @@ private:
 
         void execute(void *mState, Tree::Tree &tree) {
             MachineState &state = *(MachineState *) mState;
-            // Execute left child in current layer.
+            UnstructuredLayer::Neuron *n = state.layer.serialSplitNeuronAt(state.neuronIndex);
             getNextArgument(mState, tree);
-            // Execute right child in next layer.
-            state.layer++;
+            state.layer.addNeuron(n);
+            state.neuronIndex++;
             getNextArgument(mState, tree);
-            // Return to original layer.
-            state.layer--;
         }
     };
 
@@ -52,14 +54,7 @@ private:
             name_ = "E";
         }
 
-        void execute(void *mState, Tree::Tree &tree) {
-            MachineState &state = *(MachineState *) mState;
-            // New layer if increased index.
-            if (state.layer >= state.architecture.size())
-                state.architecture.resize(state.architecture.size() + 1);
-            // Increase neuron number in this layer.
-            state.architecture[state.layer]++;
-        }
+        void execute(void *mState, Tree::Tree &tree) {/*do nothing*/}
     };
 
     class PositiveBias : public Tree::Primitives::Primitive {
@@ -71,8 +66,22 @@ private:
 
         void execute(void *mState, Tree::Tree &tree) {
             MachineState &state = *(MachineState *) mState;
-            // Execute left child in current layer.
-            getNextArgument(mState, tree);//TODO
+            (*state.layer.getNeuronWeight(state.neuronIndex, -1u)) = 1;
+            getNextArgument(mState, tree);
+        }
+    };
+
+    class NegativeBias : public Tree::Primitives::Primitive {
+    public:
+        NegativeBias() {
+            nArguments_ = 1;
+            name_ = "O";
+        }
+
+        void execute(void *mState, Tree::Tree &tree) {
+            MachineState &state = *(MachineState *) mState;
+            (*state.layer.getNeuronWeight(state.neuronIndex, -1u)) = -1;
+            getNextArgument(mState, tree);
         }
     };
 
@@ -85,8 +94,8 @@ private:
 
         void execute(void *mState, Tree::Tree &tree) {
             MachineState &state = *(MachineState *) mState;
-            // Execute left child in current layer.
-            getNextArgument(mState, tree);//TODO
+            (*state.layer.getNeuronWeight(state.neuronIndex, -1u)) = 0;
+            getNextArgument(mState, tree);
         }
     };
 
@@ -99,8 +108,9 @@ private:
 
         void execute(void *mState, Tree::Tree &tree) {
             MachineState &state = *(MachineState *) mState;
-            // Execute left child in current layer.
-            getNextArgument(mState, tree);//TODO
+            state.weightIndex++;
+            getNextArgument(mState, tree);
+            state.weightIndex--;
         }
     };
 
@@ -113,8 +123,9 @@ private:
 
         void execute(void *mState, Tree::Tree &tree) {
             MachineState &state = *(MachineState *) mState;
-            // Execute left child in current layer.
-            getNextArgument(mState, tree);//TODO
+            state.weightIndex--;
+            getNextArgument(mState, tree);
+            state.weightIndex++;
         }
     };
 
@@ -127,8 +138,8 @@ private:
 
         void execute(void *mState, Tree::Tree &tree) {
             MachineState &state = *(MachineState *) mState;
-            // Execute left child in current layer.
-            getNextArgument(mState, tree);//TODO
+            (*state.layer.getNeuronWeight(state.neuronIndex, state.weightIndex)) = 1;
+            getNextArgument(mState, tree);
         }
     };
 
@@ -141,8 +152,8 @@ private:
 
         void execute(void *mState, Tree::Tree &tree) {
             MachineState &state = *(MachineState *) mState;
-            // Execute left child in current layer.
-            getNextArgument(mState, tree);//TODO
+            (*state.layer.getNeuronWeight(state.neuronIndex, state.weightIndex)) = -1;
+            getNextArgument(mState, tree);
         }
     };
 
@@ -155,34 +166,36 @@ private:
 
         void execute(void *mState, Tree::Tree &tree) {
             MachineState &state = *(MachineState *) mState;
-            // Execute left child in current layer.
-            getNextArgument(mState, tree);//TODO
+            (*state.layer.getNeuronWeight(state.neuronIndex, state.weightIndex)) = 0;
+            getNextArgument(mState, tree);
         }
     };
 
-    typedef struct {
-        int index;
-        double value;
-    } Pair;
+    class CutWeight : public Tree::Primitives::Primitive {
+    public:
+        CutWeight() {
+            nArguments_ = 1;
+            name_ = "X";
+        }
 
-    typedef struct {
-        uint currentIndex;
-        std::vector<Pair> changes;
-    } NeuronSpec;
+        void execute(void *mState, Tree::Tree &tree) {
+            MachineState &state = *(MachineState *) mState;
+            state.layer.cutConnection(state.neuronIndex, state.weightIndex);
+            getNextArgument(mState, tree);
+        }
+    };
 
 public:
     typedef struct {
-        uint layer;
-        std::vector<NeuronSpec> neuronSpecs;
+        uint neuronIndex;
+        uint weightIndex;
+        UnstructuredLayer &layer;
     } MachineState;
 
     /** Constructor.<br> Constructs the tree genotype and sets it to given state. */
-    CellDivisionEval(StateP state);
+    explicit CellDivisionEval(StateP state);
 
-    /** Constructor.<br> Constructs the tree genotype and sets it to given state and uses the given problem. */
-    CellDivisionEval(StateP state, IProblem &);
-
-    ~CellDivisionEval() : ReducedCellDivisionEval::~ReducedCellDivisionEval() {}
+    /* Inherited methods */
 
     FitnessP evaluate(IndividualP p) override;
 };
