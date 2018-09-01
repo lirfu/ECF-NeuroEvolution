@@ -12,10 +12,15 @@
 
 class RegressionProblem : public IProblem {
 private:
-    std::string paramOneDim_ = "onedim";
-    std::string paramRosenbrock_ = "rosenbrock";
-    std::string paramImpulse_ = "impulse";
     SquareLoss<Matrix> lossFunction_;
+
+    double linearFunc(double x) {
+        return 2 * x - 1;
+    }
+
+    double squarePolyFunc(double x) {
+        return 0.1 * x * x + 0.1;
+    }
 
     double oneDimensionalFunc(double x) {
         return 0.2 * sin(x) + 0.2 * sin(4 * x + M_PI / 7) + 0.5;
@@ -39,7 +44,11 @@ private:
     vector<Data *> trainBundle_;
 
 public:
-    explicit RegressionProblem(string &functionName, uint samplesNum);
+    enum FUNC {
+        LINREG, SQUAREPOLY, ONEDIM, ROSENBROCK, IMPULSE
+    };
+
+    explicit RegressionProblem(FUNC function, uint samplesNum, bool separateData);
 
     ~RegressionProblem();
 

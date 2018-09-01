@@ -94,7 +94,7 @@ public:
                     if(!problemExtra){
                         throw runtime_error(paramProblemExtra_+" not defined!");
                     }
-                    problem = new RegressionProblem((uint) stoi(*problemExtra), 30, true);
+                    problem = new RegressionProblem((RegressionProblem::FUNC) stoi(*problemExtra), 30, true);
                 } else if (*problemString == "wine") {
                     problem = new WineQualityProblem(*problemExtra);
                 } else {
