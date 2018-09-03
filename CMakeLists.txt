@@ -16,7 +16,7 @@ set(SOURCE_FILES main.cpp
         problems/XORProblem.cpp problems/XORProblem.h
         problems/RegressionProblem.cpp problems/RegressionProblem.h
         problems/WineQualityProblem.cpp problems/WineQualityProblem.h
-#        DirectTest.cpp DirectTest.h
+        DirectTest.h
         )
 
 find_package(Boost)
@@ -32,10 +32,7 @@ foreach( dir ${subdirs})
     add_subdirectory(${dir})
     include_directories(${dir})
 endforeach()
-#add_subdirectory(lib/nnpp)
-#include_directories(lib/nnpp)
 
 add_executable(NeuroEvolution ${SOURCE_FILES})
 
 target_link_libraries(NeuroEvolution /usr/local/lib/libecf.a)
-
