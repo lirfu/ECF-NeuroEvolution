@@ -37,9 +37,9 @@ RegressionProblem::RegressionProblem(FUNC function, uint samplesNum, bool separa
         case ROSENBROCK: {
             inputSize_ = 2;
             trainPercentage = 0.7;
-            uint axisSamples = static_cast<uint>(sqrt(samplesNum));
-            for (int x = 0; x < axisSamples; x++) {
-                for (int y = 0; y < axisSamples; y++) {
+            double axisSamples = sqrt(samplesNum);
+            for (double x = -2; x < 3; x += 5 / axisSamples) {
+                for (double y = -2; y < 3; y += 5 / axisSamples) {
                     inputs_.push_back(new Matrix(1, 2, {x * 1., y * 1.}));
                     outputs_.push_back(new Matrix(1, 1, {Rosenbrock(x, y)}));
                 }
